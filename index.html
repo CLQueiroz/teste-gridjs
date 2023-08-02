@@ -1,89 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=s, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-    <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
-    <script src="https://unpkg.com/gridjs-jquery/dist/gridjs.production.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" />
+  <title>Rota com Waypoints usando Leaflet Routing Machine</title>
+  <!-- Inclua os arquivos do Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-    <style>
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 2rem auto;
-        }
-    </style>
+  <!-- Inclua o arquivo do plugin Leaflet Routing Machine -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine"></script>
+
+  <style>
+    #map {
+      height: 97vh;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="container">
-        <div id="wrapper"></div>
-    </div>
+  <div id="map"></div>
+  <script>
+    var map = L.map('map').setView([-21.77781000, -43.36230000], 13); // Coordenadas iniciais e nível de zoom
 
-    <script>
-        $("div#wrapper").Grid({
-            columns: [
-                'Name',
-                'Age',
-                'Email'
-            ],
-            data: [
-                ['John', 25, 'john@k.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['John', 25, 'john@k.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['John', 25, 'john@k.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['John', 25, 'john@k.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-                ['Mark', 59, 'mark@e.com'],
-            ],
-            sort: true,
-            pagination: {
-                limit: 10,
-                summary: false
-            },
-            autoWidth: true,
-            language: {
-                'search': {
-                    'placeholder': '🔍 Search...'
-                },
-                'pagination': {
-                    'previous': 'Anterior',
-                    'next': 'Próximo',
-                    'showing': '😃 Displaying',
-                    'results': () => 'Resultados'
-                }
-            },
-            search: true
+    // Adicione um mapa base para visualização (pode ser substituído por outro provedor de mapas)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-        });
-    </script>
+    // Crie os pontos de parada (waypoints)
+    var waypoints = [
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17480000, -51.23480000),
+      L.latLng(-29.17480000, -51.23480000),
+      L.latLng(-27.59592000, -48.55240000),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.14783000, -51.18340000),
+      L.latLng(-29.12764000, -51.18676000),
+      L.latLng(-29.93832000, -51.11525000),
+      L.latLng(-29.17269000, -51.21027000),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.93832000, -51.11525000),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-27.59592000, -48.55240000),
+      L.latLng(-29.14783000, -51.18340000),
+      L.latLng(-29.93832000, -51.11525000),
+      L.latLng(-29.93832000, -51.11525000),
+      L.latLng(-29.17480000, -51.23480000),
+      L.latLng(-29.17423800, -51.24305740),
+      L.latLng(-21.77781000, -43.36230000),
+      L.latLng(-21.76091000, -43.34344000),
+      L.latLng(-21.75592000, -43.34627000),
+      L.latLng(-21.75686000, -43.34859000),
+      L.latLng(-21.75055000, -43.35720000),
+      L.latLng(-21.77349520, -43.34627790),
+      L.latLng(-21.78010000, -43.34194000),
+      L.latLng(-21.73528000, -43.38853000),
+      L.latLng(-21.74301000, -43.40601000),
+      L.latLng(-21.67693910, -43.43730800),
+      L.latLng(-21.78010000, -43.34194000),
+      L.latLng(-21.78311000, -43.35532000),
+      L.latLng(-21.76189000, -43.35254000),
+      L.latLng(-21.74597000, -43.38054000),
+      L.latLng(-21.76826000, -43.35585000),
+      L.latLng(-21.67721000, -43.43008000),
+      L.latLng(-21.68815000, -43.44170000),
+      L.latLng(-21.68538000, -43.43706000),
+      L.latLng(-21.77785000, -43.36243000),
+      L.latLng(-21.74575000, -43.35684000),
+      L.latLng(-21.76091000, -43.34344000),
+      L.latLng(-21.74734170, -43.38190090),
+      L.latLng(-21.72282230, -43.39893010),
+      L.latLng(-21.74418000, -43.38441000),
+      L.latLng(-21.70524000, -43.42039000),
+      L.latLng(-21.74736960, -43.40305530),
+      L.latLng(-21.71085000, -43.4246300),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.14832000, - 51.16911000),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.17945000, - 51.23397000),
+      L.latLng(-29.17945000, - 51.23397000),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-24.95945000, - 53.46730000),
+      L.latLng(-21.30163000, - 46.73870000),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.17423800, - 51.24305740),
+      L.latLng(-29.17945000, - 51.23397000),
+      L.latLng(-29.17945000, - 51.23397000),
+      L.latLng(-29.14832000, - 51.16911000),
+      L.latLng(-29.17945000, - 51.23397000),
+      L.latLng(-29.17945000, - 51.23397000),
+      L.latLng(-29.17945000, - 51.23397000),
+      L.latLng(-20.81882000, -49.38463000),
+      L.latLng(-20.80838000, -49.34491000),
+      L.latLng(-20.81901940, -49.38049770),
+      L.latLng(-20.81682260, -49.44945420),
+      L.latLng(-20.82766000, -49.34048000),
+      L.latLng(-20.81107090, -49.33422780),
+      L.latLng(-20.84997920, -49.39258950),
+      L.latLng(-20.79035000, -49.39661000),
+      L.latLng(-20.80669000, -49.40453000),
+      L.latLng(-20.81682260, -49.44945420),
+      L.latLng(-20.79115000, -49.38414000),
+      L.latLng(-20.81197000, -49.36497000),
+      L.latLng(-20.81107090, -49.33422780),
+      L.latLng(-20.83061000, -49.40057000),
+      L.latLng(-20.84700000, -49.39565000),
+      L.latLng(-20.79964000, -49.37202000),
+      L.latLng(-20.81271150, -49.37652100),
+      L.latLng(-20.87232190, -49.37806780),
+      L.latLng(-20.86357230, -49.40467340),
+      L.latLng(-20.75524000, -49.36675000),
+      L.latLng(-20.81682260, -49.44945420),
+      L.latLng(-20.85759560, -49.41281030)
+    ];
+
+    // Crie a rota usando o plugin Leaflet Routing Machine
+    L.Routing.control({
+      waypoints: waypoints,
+      routeWhileDragging: true, // Atualizar a rota enquanto arrasta os pontos de parada
+      show: false, // Exibir a caixa de diálogo com as instruções da rota
+      lineOptions: { styles: [{ color: '#242c81', weight: 3 }] },
+      fitSelectedRoutes: true,
+      draggableWaypoints: false,
+      routeWhileDragging: false,
+    }).addTo(map);
+  </script>
 </body>
 
 </html>
